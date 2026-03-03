@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baladi — Syrian Restaurant · Westlands, Nairobi</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@200;300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        :root {
+            --bg: #0d0c09;
+            --bg2: #141310;
+            --surface: #1c1a16;
+            --border: rgba(255, 255, 255, .07);
+            --text: #f0ebe2;
+            --text-dim: #a09880;
+            --text-muted: #5a5448;
+            --amber: #d4872a;
+            --amber-bright: #f0a43a;
+            --red: #c0402a;
+            --pad: clamp(20px, 5vw, 72px);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            cursor: none
+        }
+
+        /* CURSOR */
+        #cur {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: var(--amber);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width .2s, height .2s, background .2s
+        }
+
+        #cur-trail {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(212, 135, 42, .35);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: all .18s ease
+        }
+
+        body:has(a:hover) #cur {
+            width: 6px;
+            height: 6px;
+            background: var(--amber-bright)
+        }
+
+        body:has(a:hover) #cur-trail {
+            width: 52px;
+            height: 52px;
+            border-color: rgba(212, 135, 42, .2)
+        }
+
+        /* NAV */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 var(--pad);
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all .5s
+        }
+
+        .nav.dark {
+            background: rgba(13, 12, 9, .88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .n-logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: -.01em
+        }
+
+        .n-logo span {
+            font-style: italic;
+            color: var(--amber)
+        }
+
+        .n-links {
+            display: flex;
+            gap: 28px;
+            list-style: none
+        }
+
+        .n-links a {
+            font-size: .72rem;
+            font-weight: 400;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .n-links a:hover {
+            color: var(--text)
+        }
+
+        .n-cta {
+            background: var(--amber);
+            color: #0d0c09;
+            font-size: .7rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 11px 22px;
+            text-decoration: none;
+            transition: all .25s
+        }
+
+        .n-cta:hover {
+            background: var(--amber-bright);
+            transform: translateY(-1px)
+        }
+
+        /* HERO */
+        #hero {
+            height: 100svh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 45%;
+            transform: scale(1.1);
+            animation: hzoom 20s ease forwards;
+            filter: brightness(.55) saturate(.9)
+        }
+
+        @keyframes hzoom {
+            to {
+                transform: scale(1)
+            }
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(13, 12, 9, 1) 0%, rgba(13, 12, 9, .6) 40%, rgba(13, 12, 9, .15) 75%, transparent 100%)
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 var(--pad) clamp(48px, 7vh, 90px);
+            width: 100%
+        }
+
+        .hero-kicker {
+            font-size: .65rem;
+            font-weight: 500;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeUp .7s .6s forwards
+        }
+
+        .hero-h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(3.6rem, 9vw, 8.5rem);
+            font-weight: 400;
+            line-height: .95;
+            letter-spacing: -.03em;
+            margin-bottom: 28px
+        }
+
+        .hero-h1 .line {
+            display: block;
+            overflow: hidden
+        }
+
+        .hero-h1 .word {
+            display: inline-block;
+            transform: translateY(110%);
+            animation: wordUp 1s cubic-bezier(.16, 1, .3, 1) forwards
+        }
+
+        .hero-h1 .l1 .word {
+            animation-delay: .4s
+        }
+
+        .hero-h1 .l2 .word {
+            animation-delay: .55s;
+            font-style: italic;
+            color: var(--amber)
+        }
+
+        .hero-h1 .l3 .word {
+            animation-delay: .7s
+        }
+
+        @keyframes wordUp {
+            to {
+                transform: translateY(0)
+            }
+        }
+
+        .hero-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            opacity: 0;
+            animation: fadeUp .8s 1.1s forwards
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .hero-desc {
+            font-size: .95rem;
+            font-weight: 300;
+            color: var(--text-dim);
+            line-height: 1.7;
+            max-width: 380px
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-shrink: 0
+        }
+
+        .btn-amber {
+            background: var(--amber);
+            color: #0d0c09;
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 15px 32px;
+            text-decoration: none;
+            transition: all .25s
+        }
+
+        .btn-amber:hover {
+            background: var(--amber-bright);
+            transform: translateY(-2px)
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255, 255, 255, .2);
+            color: var(--text);
+            font-size: .72rem;
+            font-weight: 400;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 15px 28px;
+            text-decoration: none;
+            transition: all .25s
+        }
+
+        .btn-outline:hover {
+            border-color: rgba(255, 255, 255, .5);
+            background: rgba(255, 255, 255, .05)
+        }
+
+        /* Scroll hint */
+        .scroll-hint {
+            position: absolute;
+            right: var(--pad);
+            bottom: clamp(48px, 7vh, 90px);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeUp .8s 1.6s forwards
+        }
+
+        .scroll-hint span {
+            font-size: .55rem;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            writing-mode: vertical-rl
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(var(--amber), transparent);
+            animation: shrink 1.8s ease-in-out infinite
+        }
+
+        @keyframes shrink {
+            0% {
+                transform: scaleY(1);
+                transform-origin: top
+            }
+
+            50% {
+                transform: scaleY(.3);
+                transform-origin: top
+            }
+
+            51% {
+                transform-origin: bottom
+            }
+
+            100% {
+                transform: scaleY(1);
+                transform-origin: bottom
+            }
+        }
+
+        /* TICKER */
+        .ticker {
+            background: var(--amber);
+            padding: 11px 0;
+            overflow: hidden;
+            position: relative
+        }
+
+        .ticker-inner {
+            display: flex;
+            gap: 0;
+            white-space: nowrap;
+            animation: tick 22s linear infinite
+        }
+
+        @keyframes tick {
+            to {
+                transform: translateX(-50%)
+            }
+        }
+
+        .ticker-item {
+            font-size: .7rem;
+            font-weight: 600;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: #0d0c09;
+            padding: 0 36px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 36px
+        }
+
+        .ticker-sep {
+            width: 4px;
+            height: 4px;
+            background: rgba(13, 12, 9, .4);
+            border-radius: 50%
+        }
+
+        /* SECTION UTILS */
+        .s-eyebrow {
+            font-size: .62rem;
+            font-weight: 500;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 14px
+        }
+
+        .s-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(2rem, 4.5vw, 4rem);
+            font-weight: 400;
+            line-height: 1.05;
+            letter-spacing: -.02em;
+            color: var(--text)
+        }
+
+        .s-title i {
+            font-style: italic;
+            color: var(--amber)
+        }
+
+        /* ABOUT */
+        #about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 90vh
+        }
+
+        .about-visual {
+            position: relative;
+            overflow: hidden
+        }
+
+        .about-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(.75) saturate(.85);
+            transition: transform 1.2s ease
+        }
+
+        .about-visual:hover img {
+            transform: scale(1.04)
+        }
+
+        .about-visual-caption {
+            position: absolute;
+            bottom: 32px;
+            left: 32px;
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(1.3rem, 2.5vw, 2rem);
+            font-style: italic;
+            font-weight: 400;
+            color: rgba(255, 255, 255, .75);
+            line-height: 1.35;
+            max-width: 320px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, .5)
+        }
+
+        .about-copy {
+            background: var(--bg2);
+            padding: clamp(52px, 7vw, 100px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 1px solid var(--border)
+        }
+
+        .about-body {
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.9;
+            color: var(--text-dim);
+            margin-top: 22px;
+            margin-bottom: 16px
+        }
+
+        .about-body em {
+            color: var(--amber);
+            font-style: normal;
+            font-weight: 400
+        }
+
+        .about-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 30px
+        }
+
+        .pill {
+            font-size: .65rem;
+            font-weight: 400;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 7px 16px;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            transition: all .25s
+        }
+
+        .pill:hover {
+            border-color: var(--amber);
+            color: var(--amber)
+        }
+
+        /* Stats row */
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 44px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border)
+        }
+
+        .a-stat .big {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--amber);
+            line-height: 1;
+            display: block;
+            letter-spacing: -.02em
+        }
+
+        .a-stat .sm {
+            font-size: .65rem;
+            font-weight: 400;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 6px;
+            display: block
+        }
+
+        /* MENU */
+        #menu {
+            padding: 100px var(--pad);
+            border-top: 1px solid var(--border)
+        }
+
+        .menu-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 52px
+        }
+
+        .menu-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .m-tab {
+            font-size: .7rem;
+            font-weight: 400;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            cursor: none;
+            transition: all .2s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px
+        }
+
+        .m-tab.on {
+            color: var(--amber);
+            border-bottom-color: var(--amber)
+        }
+
+        .m-tab:hover:not(.on) {
+            color: var(--text-dim)
+        }
+
+        .menu-panel {
+            display: none
+        }
+
+        .menu-panel.on {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            margin-top: 1px
+        }
+
+        .m-row {
+            background: var(--bg);
+            padding: 26px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            transition: background .2s
+        }
+
+        .m-row:hover {
+            background: var(--surface)
+        }
+
+        .m-row h4 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 5px;
+            letter-spacing: -.01em
+        }
+
+        .m-row p {
+            font-size: .75rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-width: 280px
+        }
+
+        .m-price {
+            font-size: .88rem;
+            font-weight: 500;
+            color: var(--amber);
+            white-space: nowrap;
+            flex-shrink: 0
+        }
+
+        .menu-foot {
+            text-align: center;
+            margin-top: 40px
+        }
+
+        .menu-foot a {
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            padding: 13px 28px;
+            transition: all .25s
+        }
+
+        .menu-foot a:hover {
+            border-color: var(--amber);
+            color: var(--amber)
+        }
+
+        /* FULL SCREEN FOOD */
+        .food-screen {
+            position: relative;
+            height: 85vh;
+            overflow: hidden
+        }
+
+        .food-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 35%;
+            filter: brightness(.5) saturate(.85);
+            transition: transform 14s ease
+        }
+
+        .food-screen:hover img {
+            transform: scale(1.04)
+        }
+
+        .food-screen-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: var(--pad);
+            max-width: 700px
+        }
+
+        .food-big {
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(3rem, 7vw, 6.5rem);
+            font-weight: 400;
+            font-style: italic;
+            line-height: 1.0;
+            letter-spacing: -.03em;
+            color: var(--text);
+            margin-bottom: 32px
+        }
+
+        .food-big span {
+            display: block
+        }
+
+        .food-big span:nth-child(2) {
+            color: var(--amber)
+        }
+
+        .food-sub {
+            font-size: .9rem;
+            font-weight: 300;
+            color: var(--text-dim);
+            line-height: 1.75;
+            max-width: 360px;
+            margin-bottom: 36px
+        }
+
+        .food-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--amber);
+            color: #0d0c09;
+            font-size: .7rem;
+            font-weight: 600;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            padding: 15px 30px;
+            text-decoration: none;
+            transition: all .25s;
+            width: fit-content
+        }
+
+        .food-cta:hover {
+            background: var(--amber-bright);
+            gap: 18px
+        }
+
+        .food-cta svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round
+        }
+
+        /* GALLERY */
+        #gallery {
+            border-top: 1px solid var(--border)
+        }
+
+        .gal-head {
+            padding: 72px var(--pad) 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .gal-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr 1fr;
+            grid-template-rows: 300px 240px;
+            gap: 2px;
+            background: var(--border)
+        }
+
+        .g-cell {
+            overflow: hidden;
+            position: relative;
+            background: var(--bg)
+        }
+
+        .g-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: brightness(.8) saturate(.75);
+            transition: filter .6s, transform .9s cubic-bezier(.25, .46, .45, .94)
+        }
+
+        .g-cell:hover img {
+            filter: brightness(1) saturate(1);
+            transform: scale(1.06)
+        }
+
+        .g-span {
+            grid-row: span 2
+        }
+
+        .g-tag {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            font-size: .58rem;
+            font-weight: 500;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: rgba(240, 235, 226, .65);
+            background: rgba(13, 12, 9, .45);
+            backdrop-filter: blur(8px);
+            padding: 4px 10px
+        }
+
+        /* REVIEWS */
+        #reviews {
+            padding: 100px var(--pad);
+            border-top: 1px solid var(--border)
+        }
+
+        .rev-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 52px
+        }
+
+        .rev-badge {
+            border: 1px solid var(--border);
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .rev-badge .stars {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: var(--amber)
+        }
+
+        .rev-badge strong {
+            display: block;
+            font-size: .88rem;
+            font-weight: 500;
+            color: var(--text)
+        }
+
+        .rev-badge span {
+            font-size: .68rem;
+            color: var(--text-muted)
+        }
+
+        .rev-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--border)
+        }
+
+        .r-card {
+            background: var(--bg2);
+            padding: 40px 36px;
+            transition: background .25s
+        }
+
+        .r-card:hover {
+            background: var(--surface)
+        }
+
+        .r-stars {
+            font-size: .8rem;
+            letter-spacing: 3px;
+            color: var(--amber);
+            margin-bottom: 20px
+        }
+
+        .r-quote {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.02rem;
+            font-style: italic;
+            font-weight: 400;
+            line-height: 1.75;
+            color: var(--text);
+            margin-bottom: 28px
+        }
+
+        .r-name {
+            font-size: .78rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 2px
+        }
+
+        .r-src {
+            font-size: .68rem;
+            color: var(--text-muted)
+        }
+
+        /* DELIVERY + INFO */
+        #order {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-top: 1px solid var(--border)
+        }
+
+        .ord-left {
+            padding: 80px var(--pad);
+            background: var(--amber);
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .ord-left .s-eyebrow {
+            color: rgba(13, 12, 9, .55)
+        }
+
+        .ord-left .s-title {
+            color: #0d0c09;
+            margin-bottom: 20px
+        }
+
+        .ord-left .s-title i {
+            color: rgba(13, 12, 9, .5);
+            font-style: italic
+        }
+
+        .ord-sub {
+            font-size: .9rem;
+            font-weight: 300;
+            color: rgba(13, 12, 9, .65);
+            line-height: 1.75;
+            margin-bottom: 40px;
+            max-width: 340px
+        }
+
+        .d-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px
+        }
+
+        .d-app {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: rgba(13, 12, 9, .1);
+            border: 1px solid rgba(13, 12, 9, .15);
+            color: #0d0c09;
+            font-size: .82rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all .22s
+        }
+
+        .d-app:hover {
+            background: rgba(13, 12, 9, .18);
+            transform: translateX(4px)
+        }
+
+        .d-app-r {
+            font-size: 1rem;
+            transition: transform .2s
+        }
+
+        .d-app:hover .d-app-r {
+            transform: translateX(4px)
+        }
+
+        .ord-right {
+            padding: 80px var(--pad);
+            background: var(--bg2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 1px solid var(--border)
+        }
+
+        .ord-right .s-eyebrow {
+            color: var(--amber)
+        }
+
+        .info-list {
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column
+        }
+
+        .i-row {
+            display: flex;
+            gap: 24px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border);
+            align-items: baseline
+        }
+
+        .i-row:last-child {
+            border-bottom: none
+        }
+
+        .i-row dt {
+            font-size: .6rem;
+            font-weight: 500;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            min-width: 76px;
+            padding-top: 2px;
+            flex-shrink: 0
+        }
+
+        .i-row dd {
+            font-size: .86rem;
+            font-weight: 300;
+            color: var(--text-dim);
+            line-height: 1.6
+        }
+
+        .i-row dd a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .i-row dd a:hover {
+            color: var(--amber)
+        }
+
+        /* HALAL */
+        .halal {
+            background: var(--surface);
+            padding: 14px var(--pad);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            gap: 0
+        }
+
+        .h-chip {
+            font-size: .6rem;
+            font-weight: 500;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0 28px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .h-chip:last-child {
+            border-right: none
+        }
+
+        .h-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--amber);
+            flex-shrink: 0
+        }
+
+        /* MAP */
+        #location {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            border-top: 1px solid var(--border)
+        }
+
+        .loc-panel {
+            padding: 80px var(--pad);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid var(--border)
+        }
+
+        .loc-panel .s-eyebrow {
+            color: var(--amber)
+        }
+
+        .loc-panel .s-title {
+            margin-bottom: 40px
+        }
+
+        .loc-row {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            align-items: flex-start
+        }
+
+        .loc-row:last-child {
+            border-bottom: none
+        }
+
+        .loc-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .9rem;
+            flex-shrink: 0
+        }
+
+        .loc-row h5 {
+            font-size: .6rem;
+            font-weight: 500;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px
+        }
+
+        .loc-row p {
+            font-size: .86rem;
+            font-weight: 300;
+            color: var(--text-dim);
+            line-height: 1.55
+        }
+
+        .loc-row a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .loc-row a:hover {
+            color: var(--amber)
+        }
+
+        .loc-map iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 480px;
+            border: none;
+            display: block;
+            filter: invert(1) hue-rotate(185deg) saturate(.6) brightness(.85)
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg2);
+            padding: 60px var(--pad) 36px;
+            border-top: 1px solid var(--border)
+        }
+
+        .f-top {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 52px
+        }
+
+        .f-brand {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 14px
+        }
+
+        .f-brand span {
+            font-style: italic;
+            color: var(--amber)
+        }
+
+        .f-desc {
+            font-size: .8rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 240px;
+            margin-bottom: 24px
+        }
+
+        .f-socials {
+            display: flex;
+            gap: 8px
+        }
+
+        .f-soc {
+            font-size: .68rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: 7px 14px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all .2s
+        }
+
+        .f-soc:hover {
+            border-color: var(--amber);
+            color: var(--amber)
+        }
+
+        .f-col h5 {
+            font-size: .58rem;
+            font-weight: 600;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 18px
+        }
+
+        .f-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .f-col a {
+            font-size: .8rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .f-col a:hover {
+            color: var(--text)
+        }
+
+        .f-base {
+            padding-top: 28px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .f-base p {
+            font-size: .65rem;
+            color: var(--text-muted)
+        }
+
+        /* WHATSAPP */
+        .wa {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 50px;
+            height: 50px;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            z-index: 400;
+            box-shadow: 0 4px 24px rgba(37, 211, 102, .28);
+            transition: transform .25s
+        }
+
+        .wa:hover {
+            transform: scale(1.1)
+        }
+
+        .wa svg {
+            width: 24px;
+            height: 24px;
+            fill: #fff
+        }
+
+        /* SCROLL REVEAL */
+        .sr {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity .8s ease, transform .8s ease
+        }
+
+        .sr.in {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .d1 {
+            transition-delay: .1s
+        }
+
+        .d2 {
+            transition-delay: .2s
+        }
+
+        .d3 {
+            transition-delay: .3s
+        }
+
+        .d4 {
+            transition-delay: .4s
+        }
+
+        /* MOBILE */
+        @media(max-width:860px) {
+            .n-links {
+                display: none
+            }
+
+            .hero-h1 {
+                font-size: clamp(3rem, 12vw, 5rem)
+            }
+
+            .hero-foot {
+                flex-direction: column;
+                gap: 20px
+            }
+
+            .scroll-hint {
+                display: none
+            }
+
+            #about,
+            #order,
+            #location {
+                grid-template-columns: 1fr
+            }
+
+            .about-visual {
+                min-height: 60vw
+            }
+
+            .about-copy {
+                border-left: none
+            }
+
+            .menu-panel.on {
+                grid-template-columns: 1fr
+            }
+
+            .menu-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px
+            }
+
+            .menu-tabs {
+                overflow-x: auto
+            }
+
+            .rev-head {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px
+            }
+
+            .rev-grid {
+                grid-template-columns: 1fr
+            }
+
+            .gal-grid {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto
+            }
+
+            .g-span {
+                grid-row: span 1
+            }
+
+            .ord-left {
+                padding: 60px var(--pad)
+            }
+
+            .ord-right {
+                border-left: none;
+                border-top: 1px solid var(--border)
+            }
+
+            .loc-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border)
+            }
+
+            .f-top {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px
+            }
+
+            .halal {
+                flex-wrap: wrap;
+                gap: 12px;
+                justify-content: flex-start
+            }
+
+            .h-chip {
+                border-right: none;
+                padding: 4px 0
+            }
+
+            .f-base {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="cur"></div>
+    <div id="cur-trail"></div>
+
+    <!-- NAV -->
+    <header class="nav" id="nav">
+        <a href="#" class="n-logo">Bal<span>adi</span></a>
+        <ul class="n-links">
+            <li><a href="#about">Story</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="#order">Order</a></li>
+            <li><a href="#location">Find Us</a></li>
+        </ul>
+        <a href="https://glovoapp.com/ke/en/nairobi/baladi-restaurant-nbo/" target="_blank" class="n-cta">Order Now</a>
+    </header>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=1800&q=90"
+                alt="Baladi Restaurant signature grill">
+        </div>
+        <div class="hero-content">
+            <p class="hero-kicker">Syrian Cuisine &nbsp;·&nbsp; Westlands, Nairobi &nbsp;·&nbsp; Halal Certified</p>
+            <h1 class="hero-h1">
+                <span class="line l1"><span class="word">From</span></span>
+                <span class="line l2"><span class="word">Damascus.</span></span>
+                <span class="line l3"><span class="word">To your table.</span></span>
+            </h1>
+            <div class="hero-foot">
+                <p class="hero-desc">Every dish carries the memory of home — slow-grilled, hand-spiced, entirely halal.
+                    Nairobi's most loved Syrian restaurant.</p>
+                <div class="hero-actions">
+                    <a href="#menu" class="btn-amber">See the menu</a>
+                    <a href="#about" class="btn-outline">Our story</a>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-hint"><span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker">
+        <div class="ticker-inner">
+            <div class="ticker-item">Halal Certified<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Syrian Owned<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Stellato Mall · Westlands<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Open Daily 9AM–11PM<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Charcoal Grilled<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Uber · Glovo · Bolt<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Halal Certified<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Syrian Owned<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Stellato Mall · Westlands<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Open Daily 9AM–11PM<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Charcoal Grilled<span class="ticker-sep"></span></div>
+            <div class="ticker-item">Uber · Glovo · Bolt<span class="ticker-sep"></span></div>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="about-visual sr">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&q=85"
+                alt="Baladi restaurant dining room">
+            <div class="about-visual-caption">"The warmth you only find when someone feeds you from the heart."</div>
+        </div>
+        <div class="about-copy">
+            <p class="s-eyebrow sr">Our Story</p>
+            <h2 class="s-title sr d1"><i>Baladi</i> means<br>my homeland.</h2>
+            <p class="about-body sr d2">We didn't open a restaurant. We opened a piece of Syria. <em>Baladi</em> — the
+                Arabic word for "my homeland" — says everything about why we exist. We missed the food. We missed the
+                warmth. So we brought it to Nairobi.</p>
+            <p class="about-body sr d3">Find us at Stellato Mall in Westlands. Every dish is made from scratch, every
+                single day. And <em>Syrian tea is always on us</em>.</p>
+            <div class="about-pills sr d4">
+                <span class="pill">Syrian Cuisine</span>
+                <span class="pill">100% Halal</span>
+                <span class="pill">Charcoal Grill</span>
+                <span class="pill">Family Friendly</span>
+                <span class="pill">Dine In</span>
+                <span class="pill">Takeaway</span>
+            </div>
+            <div class="about-stats sr">
+                <div class="a-stat"><span class="big">5&#9733;</span><span class="sm">TripAdvisor</span></div>
+                <div class="a-stat" style="text-align:center"><span class="big">3</span><span class="sm">Delivery
+                        Apps</span></div>
+                <div class="a-stat" style="text-align:right"><span class="big">14h</span><span class="sm">Open
+                        Daily</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="menu">
+        <div class="menu-top">
+            <div>
+                <p class="s-eyebrow sr">What We Serve</p>
+                <h2 class="s-title sr d1">The <i>Menu</i></h2>
+            </div>
+            <div class="menu-tabs">
+                <button class="m-tab on" onclick="mTab(this,'t1')">Mezze &amp; Starters</button>
+                <button class="m-tab" onclick="mTab(this,'t2')">Grills &amp; Mains</button>
+                <button class="m-tab" onclick="mTab(this,'t3')">Salads</button>
+                <button class="m-tab" onclick="mTab(this,'t4')">Drinks &amp; Sweets</button>
+            </div>
+        </div>
+        <div class="menu-panel on" id="t1">
+            <div class="m-row">
+                <div>
+                    <h4>House Hummus</h4>
+                    <p>Chickpea, tahini, olive oil &amp; warm pita</p>
+                </div><span class="m-price">KSh 800</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Baba Ghanouj</h4>
+                    <p>Fire-roasted eggplant, tahini, garlic &amp; lemon</p>
+                </div><span class="m-price">KSh 850</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Crispy Falafel</h4>
+                    <p>Herbed chickpea, tahini sauce, fresh vegetables</p>
+                </div><span class="m-price">KSh 1,100</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Stuffed Grape Leaves</h4>
+                    <p>Vegetarian rice in herb broth &mdash; 6 pieces</p>
+                </div><span class="m-price">KSh 900</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Muhammara</h4>
+                    <p>Roasted red pepper, walnut &amp; pomegranate molasses</p>
+                </div><span class="m-price">KSh 800</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Batata Harra</h4>
+                    <p>Spiced fried potatoes with coriander &amp; chili</p>
+                </div><span class="m-price">KSh 900</span>
+            </div>
+        </div>
+        <div class="menu-panel" id="t2">
+            <div class="m-row">
+                <div>
+                    <h4>Chicken Shawarma</h4>
+                    <p>Marinated chicken, garlic sauce, pickles, fries or rice</p>
+                </div><span class="m-price">KSh 1,800</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Lamb Shawarma</h4>
+                    <p>Slow-spiced lamb, tahina, pickled turnips, fries</p>
+                </div><span class="m-price">KSh 2,000</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Baladi Mixed Grill</h4>
+                    <p>Beef skewer, Taouk &amp; Kabab, grilled tomatoes, hummus</p>
+                </div><span class="m-price">KSh 2,200</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Chicken Taouk</h4>
+                    <p>Two grilled skewers, garlic sauce, coleslaw &amp; fries</p>
+                </div><span class="m-price">KSh 1,600</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Lamb Mandi</h4>
+                    <p>Slow-cooked lamb, fragrant spiced rice, broth</p>
+                </div><span class="m-price">KSh 3,200</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Kabab Plate</h4>
+                    <p>Spiced lamb &amp; beef skewers, grilled tomatoes, onions</p>
+                </div><span class="m-price">KSh 1,900</span>
+            </div>
+        </div>
+        <div class="menu-panel" id="t3">
+            <div class="m-row">
+                <div>
+                    <h4>Fattoush</h4>
+                    <p>Crispy pita, fresh veg, sumac &amp; pomegranate dressing</p>
+                </div><span class="m-price">KSh 1,100</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Tabbouleh</h4>
+                    <p>Parsley, bulgur, tomato &amp; lemon &mdash; very traditional</p>
+                </div><span class="m-price">KSh 1,000</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Caesar with Chicken</h4>
+                    <p>Romaine, creamy dressing, croutons &amp; grilled chicken</p>
+                </div><span class="m-price">KSh 1,400</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Grilled Salmon</h4>
+                    <p>Seasoned salmon fillet, fresh vegetables, choice of side</p>
+                </div><span class="m-price">KSh 2,800</span>
+            </div>
+        </div>
+        <div class="menu-panel" id="t4">
+            <div class="m-row">
+                <div>
+                    <h4>Mahalabia</h4>
+                    <p>Syrian milk pudding, rose water &amp; crushed pistachio</p>
+                </div><span class="m-price">KSh 700</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Mint Lemonade</h4>
+                    <p>Fresh lemon &amp; garden mint, served over ice</p>
+                </div><span class="m-price">KSh 500</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Syrian Tea</h4>
+                    <p>Aromatic black tea with mint &mdash; complimentary with every meal</p>
+                </div><span class="m-price">Free</span>
+            </div>
+            <div class="m-row">
+                <div>
+                    <h4>Cappuccino</h4>
+                    <p>Italian-style espresso with steamed milk</p>
+                </div><span class="m-price">KSh 450</span>
+            </div>
+        </div>
+        <div class="menu-foot"><a href="https://glovoapp.com/ke/en/nairobi/baladi-restaurant-nbo/" target="_blank">View
+                full menu &amp; order online &rarr;</a></div>
+    </section>
+
+    <!-- FOOD SCREEN -->
+    <div class="food-screen">
+        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1800&q=88" alt="Baladi mezze feast">
+        <div class="food-screen-inner">
+            <div class="food-big">
+                <span>Made fresh.</span>
+                <span>Every day.</span>
+                <span>No exceptions.</span>
+            </div>
+            <p class="food-sub">Ingredients sourced daily. Nothing frozen. Nothing artificial. Just the real thing, made
+                the way it's always been made in Syria.</p>
+            <a href="https://glovoapp.com/ke/en/nairobi/baladi-restaurant-nbo/" target="_blank" class="food-cta">Order
+                delivery now <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg></a>
+        </div>
+    </div>
+
+    <!-- GALLERY -->
+    <section id="gallery">
+        <div class="gal-head">
+            <div>
+                <p class="s-eyebrow sr">The Food</p>
+                <h2 class="s-title sr d1">Eat with your <i>eyes</i> first.</h2>
+            </div>
+            <p class="sr"
+                style="font-size:.82rem;color:var(--text-muted);max-width:180px;text-align:right;line-height:1.6;font-weight:300">
+                The food tells the story before the first bite</p>
+        </div>
+        <div class="gal-grid">
+            <div class="g-cell g-span"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=900&q=85"
+                    alt="Mixed Grill"><span class="g-tag">Baladi Mixed Grill</span></div>
+            <div class="g-cell"><img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=85"
+                    alt="Mezze"><span class="g-tag">Mezze Selection</span></div>
+            <div class="g-cell"><img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=85"
+                    alt="Hummus"><span class="g-tag">House Hummus</span></div>
+            <div class="g-cell"><img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=85"
+                    alt="Shawarma"><span class="g-tag">Chicken Shawarma</span></div>
+            <div class="g-cell"><img src="https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?w=600&q=85"
+                    alt="Feast"><span class="g-tag">Syrian Feast</span></div>
+            <div class="g-cell"><img src="https://images.unsplash.com/photo-1514190051997-0f6f39ca5cde?w=600&q=85"
+                    alt="Interior"><span class="g-tag">Our Dining Room</span></div>
+        </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section id="reviews">
+        <div class="rev-head">
+            <div>
+                <p class="s-eyebrow sr">Guest Reviews</p>
+                <h2 class="s-title sr d1">People keep <i>coming back.</i></h2>
+            </div>
+            <div class="rev-badge sr">
+                <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <div><strong>5.0 / 5.0</strong><span>TripAdvisor &middot; Nairobi</span></div>
+            </div>
+        </div>
+        <div class="rev-grid">
+            <div class="r-card sr">
+                <div class="r-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="r-quote">"Baladi is a gem. Warm ambiance, exquisite flavours. The hummus and pita alone are
+                    worth the trip."</p>
+                <div class="r-name">Aisha M.</div>
+                <div class="r-src">TripAdvisor &middot; Nairobi</div>
+            </div>
+            <div class="r-card sr d1">
+                <div class="r-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="r-quote">"Lamb Mandi, chops, hummus, chicken kebab &mdash; and complimentary Syrian tea. One
+                    of the best meals in Nairobi, period."</p>
+                <div class="r-name">Kevin O.</div>
+                <div class="r-src">TripAdvisor &middot; November 2024</div>
+            </div>
+            <div class="r-card sr d2">
+                <div class="r-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="r-quote">"Genuinely authentic Arab food. Best atmosphere in Westlands. The owner is hands-on
+                    &mdash; you feel it in every dish."</p>
+                <div class="r-name">Mercy K.</div>
+                <div class="r-src">TripAdvisor &middot; Nairobi</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ORDER + INFO -->
+    <section id="order">
+        <div class="ord-left">
+            <p class="s-eyebrow sr">Order Online</p>
+            <h2 class="s-title sr d1">Baladi<br>to your <i>door.</i></h2>
+            <p class="ord-sub sr d2">Fast delivery across Nairobi on all your favourite apps.</p>
+            <div class="d-list sr d3">
+                <a href="https://www.ubereats.com/ke/store/baladi-restaurant/rQ4BKd7LVKKKlmCSrd1nfg" target="_blank"
+                    class="d-app">Uber Eats <span class="d-app-r">&rarr;</span></a>
+                <a href="https://glovoapp.com/ke/en/nairobi/baladi-restaurant-nbo/" target="_blank" class="d-app">Glovo
+                    <span class="d-app-r">&rarr;</span></a>
+                <a href="https://food.bolt.eu/en/320-nairobi/p/68298-baladi-restaurant/" target="_blank"
+                    class="d-app">Bolt Food <span class="d-app-r">&rarr;</span></a>
+            </div>
+        </div>
+        <div class="ord-right">
+            <p class="s-eyebrow sr">Visit Us</p>
+            <h2 class="s-title sr d1">Come <i>in.</i></h2>
+            <dl class="info-list sr d2">
+                <div class="i-row">
+                    <dt>Address</dt>
+                    <dd>Ground Floor, Stellato Mall<br>Muthithi Road, Westlands, Nairobi</dd>
+                </div>
+                <div class="i-row">
+                    <dt>Hours</dt>
+                    <dd>Monday &ndash; Sunday · 9:00 AM &ndash; 11:00 PM</dd>
+                </div>
+                <div class="i-row">
+                    <dt>Phone</dt>
+                    <dd><a href="tel:+254799222220">0799 222 220</a></dd>
+                </div>
+                <div class="i-row">
+                    <dt>Email</dt>
+                    <dd><a href="mailto:Baladi.kenya@gmail.com">Baladi.kenya@gmail.com</a></dd>
+                </div>
+                <div class="i-row">
+                    <dt>Parking</dt>
+                    <dd>Free at Stellato Mall</dd>
+                </div>
+            </dl>
+        </div>
+    </section>
+
+    <!-- HALAL BAR -->
+    <div class="halal">
+        <div class="h-chip"><span class="h-dot"></span>100% Halal Certified</div>
+        <div class="h-chip"><span class="h-dot"></span>No Alcohol on Premises</div>
+        <div class="h-chip"><span class="h-dot"></span>Halal-Sourced Meats</div>
+        <div class="h-chip"><span class="h-dot"></span>Syrian Owned &amp; Operated</div>
+    </div>
+
+    <!-- LOCATION -->
+    <section id="location">
+        <div class="loc-panel">
+            <p class="s-eyebrow sr">Where to Find Us</p>
+            <h2 class="s-title sr d1">Come <i>visit.</i></h2>
+            <div class="sr d2">
+                <div class="loc-row">
+                    <div class="loc-icon">&#128205;</div>
+                    <div>
+                        <h5>Address</h5>
+                        <p>Ground Floor, Stellato Mall<br>Muthithi Road, Westlands, Nairobi</p>
+                    </div>
+                </div>
+                <div class="loc-row">
+                    <div class="loc-icon">&#128336;</div>
+                    <div>
+                        <h5>Hours</h5>
+                        <p>Mon &ndash; Sun · 9:00 AM &ndash; 11:00 PM</p>
+                    </div>
+                </div>
+                <div class="loc-row">
+                    <div class="loc-icon">&#128222;</div>
+                    <div>
+                        <h5>Reservations</h5>
+                        <p><a href="tel:+254799222220">0799 222 220</a></p>
+                    </div>
+                </div>
+                <div class="loc-row">
+                    <div class="loc-icon">&#128663;</div>
+                    <div>
+                        <h5>Parking</h5>
+                        <p>Free parking at Stellato Mall</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="loc-map">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.8!2d36.8024!3d-1.2676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f176a3bc98221%3A0x75c8e0b3f8c20daf!2sStellato%20Mall%2C%20Muthithi%20Rd%2C%20Nairobi!5e0!3m2!1sen!2ske!4v1699900000000"
+                allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                title="Baladi Location"></iframe>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="f-top">
+            <div>
+                <a href="#" class="f-brand">Bal<span>adi</span></a>
+                <p class="f-desc">Authentic Syrian cuisine in the heart of Nairobi. Made with memory, served with
+                    warmth.</p>
+                <div class="f-socials">
+                    <a href="https://www.instagram.com/baladirestaurant_/" target="_blank" class="f-soc">Instagram</a>
+                    <a href="https://www.facebook.com/baladirestaurantke/" target="_blank" class="f-soc">Facebook</a>
+                    <a href="https://x.com/Baladi_Nairobi" target="_blank" class="f-soc">X</a>
+                </div>
+            </div>
+            <div class="f-col">
+                <h5>Menu</h5>
+                <ul>
+                    <li><a href="#menu">Mezze &amp; Starters</a></li>
+                    <li><a href="#menu">Grills &amp; Mains</a></li>
+                    <li><a href="#menu">Salads</a></li>
+                    <li><a href="#menu">Drinks &amp; Sweets</a></li>
+                </ul>
+            </div>
+            <div class="f-col">
+                <h5>Order</h5>
+                <ul>
+                    <li><a href="https://www.ubereats.com/ke/store/baladi-restaurant/rQ4BKd7LVKKKlmCSrd1nfg"
+                            target="_blank">Uber Eats</a></li>
+                    <li><a href="https://glovoapp.com/ke/en/nairobi/baladi-restaurant-nbo/" target="_blank">Glovo</a>
+                    </li>
+                    <li><a href="https://food.bolt.eu/en/320-nairobi/p/68298-baladi-restaurant/" target="_blank">Bolt
+                            Food</a></li>
+                </ul>
+            </div>
+            <div class="f-col">
+                <h5>Contact</h5>
+                <ul>
+                    <li><a href="tel:+254799222220">0799 222 220</a></li>
+                    <li><a href="mailto:Baladi.kenya@gmail.com">Email Us</a></li>
+                    <li><a href="https://wa.me/254799222220" target="_blank">WhatsApp</a></li>
+                    <li><a href="#location">Directions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="f-base">
+            <p>&copy; 2025 Baladi Restaurant &middot; Stellato Mall, Westlands, Nairobi</p>
+            <p>Open Daily 9AM &ndash; 11PM</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/254799222220" target="_blank" class="wa">
+        <svg viewBox="0 0 24 24">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+    </a>
+
+    <script>
+        // Cursor
+        const cur = document.getElementById('cur'), trail = document.getElementById('cur-trail');
+        let mx = 0, my = 0, tx = 0, ty = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+        });
+        (function loop() { tx += (mx - tx) * .13; ty += (my - ty) * .13; trail.style.left = tx + 'px'; trail.style.top = ty + 'px'; requestAnimationFrame(loop) })();
+
+        // Nav
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => nav.classList.toggle('dark', scrollY > 60));
+
+        // Tabs
+        function mTab(b, id) {
+            document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('on'));
+            document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('on'));
+            b.classList.add('on'); document.getElementById(id).classList.add('on');
+        }
+
+        // Reveal
+        const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } }) }, { threshold: .1 });
+        document.querySelectorAll('.sr').forEach(el => io.observe(el));
+    </script>
+</body>
+
+</html>
